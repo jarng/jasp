@@ -1,0 +1,33 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-rows: repeat(40, 1fr);
+  grid-template-columns: repeat(80, 1fr);
+  width: 90vw;
+  height: 90vh;
+  border: 1px solid #000;
+  margin: 0 auto;
+}
+
+.start {
+  background-color: green;
+}
+
+.end {
+  background-color: red;
+}
+
+.cell {
+  border: 1px solid #000;
+}
+
+.wall {
+  background-color: #000;
+}
