@@ -1,5 +1,5 @@
 import { dfs } from "./algos.js";
-import { ROWS, COLUMNS } from "./const.js";
+import { ROWS, COLUMNS, WALL_RATIO } from "./const.js";
 
 const grid = document.querySelector(".grid");
 let start, end;
@@ -28,7 +28,7 @@ function initWalls() {
     for (let j = 0; j < COLUMNS; ++j) {
       const cell = document.getElementById(`${i}-${j}`);
       if (
-        Math.random() > 0.69 &&
+        Math.random() >= WALL_RATIO &&
         cell.id !== "0-0" &&
         cell.id !== `${ROWS - 1}-${COLUMNS - 1}`
       ) {
