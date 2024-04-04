@@ -1,6 +1,8 @@
+import { dfs } from "./algos.js";
 import { ROWS, COLUMNS } from "./const.js";
 
 const grid = document.querySelector(".grid");
+let start, end;
 
 function initGrid() {
   for (let i = 0; i < ROWS; ++i) {
@@ -14,8 +16,8 @@ function initGrid() {
   }
 
   // init start and end
-  const start = document.getElementById("0-0");
-  const end = document.getElementById(`${ROWS - 1}-${COLUMNS - 1}`);
+  start = document.getElementById("0-0");
+  end = document.getElementById(`${ROWS - 1}-${COLUMNS - 1}`);
   start.classList.add("start");
   end.classList.add("end");
 }
@@ -38,3 +40,4 @@ function initWalls() {
 
 initGrid();
 initWalls();
+dfs(grid, start, end);

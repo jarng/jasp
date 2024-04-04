@@ -3,31 +3,50 @@ html {
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
   font-size: 1.6rem;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid {
   display: grid;
   grid-template-rows: repeat(40, 1fr);
-  grid-template-columns: repeat(80, 1fr);
-  width: 90vw;
-  height: 90vh;
-  border: 1px solid #000;
+  grid-template-columns: repeat(100, 1fr);
+  width: 95%;
+  height: 90%;
+  border: 1px solid rgb(175, 216, 248);
   margin: 0 auto;
 }
 
-.start {
+.cell.start {
   background-color: green;
 }
 
-.end {
+.cell.end {
   background-color: red;
 }
 
 .cell {
-  border: 1px solid #000;
+  border: 1px solid rgb(175, 216, 248);
 }
 
 .wall {
-  background-color: #000;
+  background-color: #0c3547;
+}
+
+.visited {
+  background-color: #40cee3;
+}
+
+.path {
+  background-color: #fffe6a;
 }
