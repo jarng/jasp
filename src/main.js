@@ -1,43 +1,87 @@
-import { dfs } from "./algos.js";
+import { bfs, dfs } from "./algos.js";
 import { ROWS, COLUMNS, WALL_RATIO } from "./const.js";
 
-const grid = document.querySelector(".grid");
-let start, end;
+class App {
+  constructor() {
+    this.grid = document.querySelector(".grid");
+    this.start;
+    this.end;
 
-function initGrid() {
-  for (let i = 0; i < ROWS; ++i) {
-    for (let j = 0; j < COLUMNS; ++j) {
-      const div = document.createElement("div");
-      div.classList.add("cell");
-      div.id = `${i}-${j}`;
+    this.startBtn = document.getElementById("start-btn");
+    this.resetBtn = document.getElementById("reset-btn");
 
-      grid.appendChild(div);
-    }
+    this.select = document.getElementById("algo-select");
+    this.running = false;
   }
 
-  // init start and end
-  start = document.getElementById("0-0");
-  end = document.getElementById(`${ROWS - 1}-${COLUMNS - 1}`);
-  start.classList.add("start");
-  end.classList.add("end");
-}
+  initGrid() {
+    for (let i = 0; i < ROWS; ++i) {
+      for (let j = 0; j < COLUMNS; ++j) {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        div.id = `${i}-${j}`;
 
-// randomly place walls
-function initWalls() {
-  for (let i = 0; i < ROWS; ++i) {
-    for (let j = 0; j < COLUMNS; ++j) {
-      const cell = document.getElementById(`${i}-${j}`);
-      if (
-        Math.random() >= WALL_RATIO &&
-        cell.id !== "0-0" &&
-        cell.id !== `${ROWS - 1}-${COLUMNS - 1}`
-      ) {
-        cell.classList.add("wall");
+        this.grid.appendChild(div);
+      }
+    }
+
+    // init start and end
+    this.start = document.getElementById("0-0");
+    this.end = document.getElementById(`${ROWS - 1}-${COLUMNS - 1}`);
+    this.start.classList.add("start");
+    this.end.classList.add("end");
+  }
+
+  initWalls() {
+    for (let i = 0; i < ROWS; ++i) {
+      for (let j = 0; j < COLUMNS; ++j) {
+        const cell = document.getElementById(`${i}-${j}`);
+        if (
+          Math.random() >= WALL_RATIO &&
+          cell.id !== "0-0" &&
+          cell.id !== `${ROWS - 1}-${COLUMNS - 1}`
+        ) {
+          cell.classList.add("wall");
+        }
       }
     }
   }
+
+  setupEvents() {
+    this.startBtn.onclick = async () => {
+      if (this.running) return;
+
+      this.startBtn.disabled = true;
+      this.resetBtn.disabled = true;
+      this.running = true;
+
+      switch (this.select.value) {
+        case "dfs":
+          await dfs(this.start, this.end);
+          break;
+        case "bfs":
+          await bfs(this.start, this.end);
+          break;
+        default:
+          break;
+      }
+
+      this.startBtn.disabled = false;
+      this.resetBtn.disabled = false;
+      this.running = false;
+    };
+
+    this.resetBtn.onclick = () => {
+      if (this.running) return;
+      this.grid.innerHTML = "";
+      this.initGrid();
+      this.initWalls();
+      this.running = false;
+    };
+  }
 }
 
-initGrid();
-initWalls();
-dfs(grid, start, end);
+const app = new App();
+app.initGrid();
+app.initWalls();
+app.setupEvents();

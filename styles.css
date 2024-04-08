@@ -9,12 +9,25 @@ body {
   font-size: 1.6rem;
 }
 
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.header button {
+  font-size: 2rem;
+}
+
 .container {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .grid {

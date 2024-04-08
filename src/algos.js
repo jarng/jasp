@@ -1,28 +1,27 @@
 import { ROWS, COLUMNS, DIRECTIONS, DELAY_MS } from "./const.js";
 
-export async function dfs(grid, start, end) {
+export async function dfs(start, end) {
   const stack = [];
   const visited = {};
   const parents = {};
+
   stack.push(start);
+  visited[start.id] = true;
 
   while (stack.length > 0) {
     const v = stack.pop();
+    await sleep(DELAY_MS);
+    v.classList.add("visited");
 
     if (v.id === end.id) {
       console.log("FOUND", v);
       break;
     }
 
-    if (!visited[v.id]) {
-      visited[v.id] = true;
-      await sleep(DELAY_MS);
-      v.classList.add("visited");
-
-      for (const node of getNeighbors(v).reverse()) {
-        if (!visited[node.id]) {
-          parents[node.id] = v;
-        }
+    for (const node of getNeighbors(v).reverse()) {
+      if (!visited[node.id]) {
+        visited[node.id] = true;
+        parents[node.id] = v;
         stack.push(node);
       }
     }
@@ -31,6 +30,40 @@ export async function dfs(grid, start, end) {
   const path = getPath(parents, start, end);
   drawPath(path);
 }
+
+export async function bfs(start, end) {
+  const queue = [];
+  const visited = {};
+  const parents = {};
+
+  queue.unshift(start);
+  visited[start.id] = true;
+
+  while (queue.length > 0) {
+    const v = queue.pop();
+
+    await sleep(DELAY_MS);
+    v.classList.add("visited");
+
+    if (v.id === end.id) {
+      console.log("FOUND", v);
+      break;
+    }
+
+    for (const node of getNeighbors(v)) {
+      if (!visited[node.id]) {
+        visited[node.id] = true;
+        parents[node.id] = v;
+        queue.unshift(node);
+      }
+    }
+  }
+
+  const path = getPath(parents, start, end);
+  drawPath(path);
+}
+
+export async function dijkstra(start, end) {}
 
 export function getNeighbors(node) {
   const neighbors = [];
