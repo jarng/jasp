@@ -36,7 +36,7 @@ body {
   grid-template-columns: repeat(100, 1fr);
   width: 95%;
   height: 90%;
-  border: 1px solid rgb(175, 216, 248);
+  border: 0.5px solid rgb(175, 216, 248);
   margin: 0 auto;
 }
 
@@ -49,17 +49,21 @@ body {
 }
 
 .cell {
-  border: 1px solid rgb(175, 216, 248);
+  border: 0.5px solid rgb(175, 216, 248);
 }
 
 .wall {
   background-color: #0c3547;
 }
 
-.visited {
+.cell.visited {
   background-color: #40cee3;
 }
 
-.path {
-  background-color: #fffe6a;
+.discovered {
+  background-color: #8e7424;
+}
+
+.cell.path {
+  background-color: #fffe6a !important;
 }

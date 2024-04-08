@@ -1,4 +1,4 @@
-import { bfs, dfs } from "./algos.js";
+import { bfs, dfs, dijkstra } from "./algos.js";
 import { ROWS, COLUMNS, WALL_RATIO } from "./const.js";
 
 class App {
@@ -9,6 +9,7 @@ class App {
 
     this.startBtn = document.getElementById("start-btn");
     this.resetBtn = document.getElementById("reset-btn");
+    this.rebuildBtn = document.getElementById("rebuild-btn");
 
     this.select = document.getElementById("algo-select");
     this.running = false;
@@ -20,6 +21,7 @@ class App {
         const div = document.createElement("div");
         div.classList.add("cell");
         div.id = `${i}-${j}`;
+        div.dataset.dist = Infinity;
 
         this.grid.appendChild(div);
       }
@@ -53,6 +55,7 @@ class App {
 
       this.startBtn.disabled = true;
       this.resetBtn.disabled = true;
+      this.rebuildBtn.disabled = true;
       this.running = true;
 
       switch (this.select.value) {
@@ -62,21 +65,33 @@ class App {
         case "bfs":
           await bfs(this.start, this.end);
           break;
+        case "dijkstra":
+          await dijkstra(this.start, this.end);
+          break;
         default:
           break;
       }
 
       this.startBtn.disabled = false;
       this.resetBtn.disabled = false;
+      this.rebuildBtn.disabled = false;
       this.running = false;
     };
 
-    this.resetBtn.onclick = () => {
+    this.rebuildBtn.onclick = () => {
       if (this.running) return;
       this.grid.innerHTML = "";
       this.initGrid();
       this.initWalls();
       this.running = false;
+    };
+
+    this.resetBtn.onclick = () => {
+      if (this.running) return;
+
+      document
+        .querySelectorAll(".cell")
+        .forEach((i) => i.classList.remove("visited", "path", "discovered"));
     };
   }
 }

@@ -10,16 +10,17 @@ export async function dfs(start, end) {
 
   while (stack.length > 0) {
     const v = stack.pop();
+
     await sleep(DELAY_MS);
     v.classList.add("visited");
 
     if (v.id === end.id) {
-      console.log("FOUND", v);
       break;
     }
 
     for (const node of getNeighbors(v).reverse()) {
       if (!visited[node.id]) {
+        node.classList.add("discovered");
         visited[node.id] = true;
         parents[node.id] = v;
         stack.push(node);
@@ -46,12 +47,12 @@ export async function bfs(start, end) {
     v.classList.add("visited");
 
     if (v.id === end.id) {
-      console.log("FOUND", v);
       break;
     }
 
     for (const node of getNeighbors(v)) {
       if (!visited[node.id]) {
+        node.classList.add("discovered");
         visited[node.id] = true;
         parents[node.id] = v;
         queue.unshift(node);
@@ -60,12 +61,44 @@ export async function bfs(start, end) {
   }
 
   const path = getPath(parents, start, end);
-  drawPath(path);
+  await drawPath(path);
 }
 
-export async function dijkstra(start, end) {}
+export async function dijkstra(start, end) {
+  const prioQueue = [];
+  const parents = {};
+  const dist = {}; //dist from source
 
-export function getNeighbors(node) {
+  dist[start.id] = 0;
+  prioQueue.unshift({ node: start, dist: 0 });
+
+  while (prioQueue.length > 0) {
+    prioQueue.sort((a, b) => a.dist < b.dist);
+    const v = prioQueue.pop().node;
+
+    await sleep(DELAY_MS);
+    v.classList.add("visited");
+
+    if (v.id === end.id) {
+      break;
+    }
+
+    for (const node of getNeighbors(v)) {
+      node.classList.add("discovered");
+      const alt = dist[v.id] + distance(v, node);
+      if (alt < (dist[node.id] || node.dataset.dist)) {
+        parents[node.id] = v;
+        dist[node.id] = alt;
+        prioQueue.unshift({ node, dist: alt });
+      }
+    }
+  }
+
+  const path = getPath(parents, start, end);
+  await drawPath(path);
+}
+
+function getNeighbors(node) {
   const neighbors = [];
   DIRECTIONS.forEach((d) => {
     const [i1, j1] = node.id.split("-");
@@ -82,6 +115,14 @@ export function getNeighbors(node) {
   });
 
   return neighbors;
+}
+
+function distance(v1, v2) {
+  const [r1, c1] = v1.id.split("-");
+  const [r2, c2] = v2.id.split("-");
+
+  if (parseInt(r1) === parseInt(r2) || parseInt(c1) === parseInt(c2)) return 1; //same line
+  return 1.4; //diagonal
 }
 
 function sleep(ms) {
