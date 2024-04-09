@@ -49,11 +49,11 @@ body {
   margin: 0 auto;
 }
 
-.cell.start {
+.grid .cell.start {
   background-color: green;
 }
 
-.cell.end {
+.grid .cell.end {
   background-color: red;
 }
 
@@ -74,5 +74,5 @@ body {
 }
 
 .cell.path {
-  background-color: #fffe6a !important;
+  background-color: #fffe6a;
 }
