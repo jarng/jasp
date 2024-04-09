@@ -116,8 +116,8 @@ class App {
       this.running = false;
     };
 
-    this.rebuildBtn.onclick = () => this.rebuild;
-    this.resetBtn.onclick = () => this.reset;
+    this.rebuildBtn.onclick = () => this.rebuild();
+    this.resetBtn.onclick = () => this.reset();
   }
 }
 
