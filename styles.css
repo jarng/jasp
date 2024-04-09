@@ -15,16 +15,25 @@ body {
   justify-content: center;
   padding-top: 16px;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .header button {
   font-size: 2rem;
 }
 
+.result {
+  margin-bottom: 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
 .container {
   width: 100vw;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   justify-content: center;
   /* align-items: center; */

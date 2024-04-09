@@ -1,4 +1,6 @@
-import { ROWS, COLUMNS, DIRECTIONS, DELAY_MS } from "./const.js";
+import { DELAY_MS } from "./const.js";
+
+import { distance, getNeighbors, heuristic, sleep, getPath } from "./utils.js";
 
 export async function dfs(start, end) {
   const stack = [];
@@ -28,8 +30,7 @@ export async function dfs(start, end) {
     }
   }
 
-  const path = getPath(parents, start, end);
-  drawPath(path);
+  return getPath(parents, start, end);
 }
 
 export async function bfs(start, end) {
@@ -60,8 +61,7 @@ export async function bfs(start, end) {
     }
   }
 
-  const path = getPath(parents, start, end);
-  await drawPath(path);
+  return getPath(parents, start, end);
 }
 
 export async function dijkstra(start, end) {
@@ -94,60 +94,41 @@ export async function dijkstra(start, end) {
     }
   }
 
-  const path = getPath(parents, start, end);
-  await drawPath(path);
+  return getPath(parents, start, end);
 }
 
-function getNeighbors(node) {
-  const neighbors = [];
-  DIRECTIONS.forEach((d) => {
-    const [i1, j1] = node.id.split("-");
-    const [di, dj] = d;
+export async function astar(start, end) {
+  const prioQueue = [];
+  const parents = {};
+  const gscore = {};
+  const fscore = {};
 
-    const i2 = parseInt(i1) + di;
-    const j2 = parseInt(j1) + dj;
+  gscore[start.id] = 0;
+  fscore[start.id] = heuristic(start, end);
+  prioQueue.unshift({ node: start, dist: fscore[start.id] });
 
-    if (i2 < 0 || i2 > ROWS - 1 || j2 < 0 || j2 > COLUMNS - 1) return; //out of grid
-    const neighbor = document.getElementById(`${i2}-${j2}`);
-    if (!neighbor.classList.contains("wall")) {
-      neighbors.push(neighbor);
-    }
-  });
+  while (prioQueue.length > 0) {
+    prioQueue.sort((a, b) => a.dist < b.dist);
+    const v = prioQueue.pop().node;
 
-  return neighbors;
-}
-
-function distance(v1, v2) {
-  const [r1, c1] = v1.id.split("-");
-  const [r2, c2] = v2.id.split("-");
-
-  if (parseInt(r1) === parseInt(r2) || parseInt(c1) === parseInt(c2)) return 1; //same line
-  return 1.4; //diagonal
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function getPath(parents, start, end) {
-  const final = [];
-  let current = end;
-  while (current && current !== start) {
-    final.push(current);
-    current = parents[current.id];
-  }
-
-  if (current === start) {
-    final.push(start);
-    return final.reverse();
-  } else {
-    return [];
-  }
-}
-
-async function drawPath(path) {
-  for (const node of path) {
-    document.getElementById(node.id).classList.add("path");
     await sleep(DELAY_MS);
+    v.classList.add("visited");
+
+    if (v.id === end.id) {
+      break;
+    }
+
+    for (const node of getNeighbors(v)) {
+      node.classList.add("discovered");
+      const alt = gscore[v.id] + distance(v, node);
+      if (alt < (gscore[node.id] || node.dataset.dist)) {
+        parents[node.id] = v;
+        gscore[node.id] = alt;
+        fscore[node.id] = alt + heuristic(node, end);
+        prioQueue.unshift({ node, dist: fscore[node.id] });
+      }
+    }
   }
+
+  return getPath(parents, start, end);
 }

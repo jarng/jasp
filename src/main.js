@@ -1,4 +1,5 @@
-import { bfs, dfs, dijkstra } from "./algos.js";
+import { astar, bfs, dfs, dijkstra } from "./algos.js";
+import { drawPath, getTotalCost } from "./utils.js";
 import { ROWS, COLUMNS, WALL_RATIO } from "./const.js";
 
 class App {
@@ -12,6 +13,8 @@ class App {
     this.rebuildBtn = document.getElementById("rebuild-btn");
 
     this.select = document.getElementById("algo-select");
+    this.elapsed = document.getElementById("elapsed");
+    this.cost = document.getElementById("cost");
     this.running = false;
   }
 
@@ -49,10 +52,42 @@ class App {
     }
   }
 
+  async execute(func) {
+    const startTime = Date.now();
+    const path = await func();
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+    const cost = getTotalCost(path).toFixed(2);
+
+    drawPath(path);
+
+    this.elapsed.innerHTML = `${elapsed}s`;
+    this.cost.innerHTML = cost;
+  }
+
+  reset() {
+    if (this.running) return;
+    this.elapsed.innerHTML = "";
+    this.cost.innerHTML = "";
+    document
+      .querySelectorAll(".cell")
+      .forEach((i) => i.classList.remove("visited", "path", "discovered"));
+  }
+
+  rebuild() {
+    if (this.running) return;
+    this.grid.innerHTML = "";
+    this.initGrid();
+    this.initWalls();
+    this.running = false;
+    this.elapsed.innerHTML = "";
+    this.cost.innerHTML = "";
+  }
+
   setupEvents() {
     this.startBtn.onclick = async () => {
       if (this.running) return;
 
+      this.reset();
       this.startBtn.disabled = true;
       this.resetBtn.disabled = true;
       this.rebuildBtn.disabled = true;
@@ -60,16 +95,19 @@ class App {
 
       switch (this.select.value) {
         case "dfs":
-          await dfs(this.start, this.end);
+          await this.execute(() => dfs(this.start, this.end));
           break;
         case "bfs":
-          await bfs(this.start, this.end);
+          await this.execute(() => bfs(this.start, this.end));
           break;
         case "dijkstra":
-          await dijkstra(this.start, this.end);
+          await this.execute(() => dijkstra(this.start, this.end));
+          break;
+        case "astar":
+          await this.execute(() => astar(this.start, this.end));
           break;
         default:
-          break;
+          throw new Error("Algorithm not implemented");
       }
 
       this.startBtn.disabled = false;
@@ -78,21 +116,8 @@ class App {
       this.running = false;
     };
 
-    this.rebuildBtn.onclick = () => {
-      if (this.running) return;
-      this.grid.innerHTML = "";
-      this.initGrid();
-      this.initWalls();
-      this.running = false;
-    };
-
-    this.resetBtn.onclick = () => {
-      if (this.running) return;
-
-      document
-        .querySelectorAll(".cell")
-        .forEach((i) => i.classList.remove("visited", "path", "discovered"));
-    };
+    this.rebuildBtn.onclick = () => this.rebuild;
+    this.resetBtn.onclick = () => this.reset;
   }
 }
 

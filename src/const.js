@@ -26,3 +26,5 @@ export const DIRECTIONS = [
 
 export const DELAY_MS = 10;
 export const WALL_RATIO = 0.69;
+export const STRAIGHT_COST = 1;
+export const DIAGONAL_COST = 1.4; //sqrt(2);
