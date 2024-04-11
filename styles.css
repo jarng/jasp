@@ -14,12 +14,17 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 16px;
-  gap: 8px;
+  gap: 16px;
   margin-bottom: 12px;
 }
 
 .header button {
   font-size: 2rem;
+}
+
+.options {
+  display: flex;
+  align-items: center;
 }
 
 .result {

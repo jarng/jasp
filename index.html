@@ -8,18 +8,30 @@
   </head>
   <body>
     <div class="header">
-      <select name="algo" id="algo-select">
-        <option value="dfs">DFS</option>
-        <option value="bfs">BFS</option>
-        <option value="dijkstra">Dijkstra</option>
-        <option value="astar">A*</option>
-        <option value="gbs">Greedy Best-first Search</option>
-        <option value="beam">Beam Search</option>
-      </select>
+      <div class="options">
+        <label for="algo-select">Algorithm: </label>
+        <select name="algo" id="algo-select">
+          <option value="dfs">DFS</option>
+          <option value="bfs">BFS</option>
+          <option value="dijkstra">Dijkstra</option>
+          <option value="astar">A*</option>
+          <option value="gbs">Greedy Best-first Search</option>
+          <option value="beam">Beam Search</option>
+        </select>
+      </div>
+
+      <div class="options">
+        <label for="maze-gen">Maze: </label>
+        <select name="maze" id="maze-gen">
+          <option value="random">Random</option>
+        </select>
+      </div>
+
       <button id="start-btn">Start</button>
       <button id="reset-btn">Reset</button>
       <button id="rebuild-btn">Rebuild</button>
     </div>
+
     <div class="result">
       <span>Elapsed: <span id="elapsed"></span></span>
       <span>Cost: <span id="cost"></span></span>

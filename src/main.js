@@ -16,6 +16,13 @@ class App {
     this.elapsed = document.getElementById("elapsed");
     this.cost = document.getElementById("cost");
     this.running = false;
+
+    this.startCoord = `${Math.round(ROWS / 2) - 1}-${
+      Math.round(COLUMNS / 5) - 1
+    }`;
+    this.endCoord = `${Math.round(ROWS / 2) - 1}-${
+      Math.round((COLUMNS * 4) / 5) - 1
+    }`;
   }
 
   initGrid() {
@@ -31,12 +38,8 @@ class App {
     }
 
     // init start and end
-    this.start = document.getElementById(
-      `${ROWS / 2 - 1}-${Math.round(COLUMNS / 5) - 1}`
-    );
-    this.end = document.getElementById(
-      `${ROWS / 2 - 1}-${Math.round((COLUMNS * 4) / 5) - 1}`
-    );
+    this.start = document.getElementById(this.startCoord);
+    this.end = document.getElementById(this.endCoord);
     this.start.classList.add("start");
     this.end.classList.add("end");
   }
@@ -47,8 +50,8 @@ class App {
         const cell = document.getElementById(`${i}-${j}`);
         if (
           Math.random() >= WALL_RATIO &&
-          cell.id !== "0-0" &&
-          cell.id !== `${ROWS - 1}-${COLUMNS - 1}`
+          cell.id !== this.startCoord &&
+          cell.id !== this.endCoord
         ) {
           cell.classList.add("wall");
         }
