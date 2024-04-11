@@ -1,4 +1,4 @@
-import { DELAY_MS } from "./const.js";
+import { BEAM_BETA, DELAY_MS } from "./const.js";
 
 import { distance, getNeighbors, heuristic, sleep, getPath } from "./utils.js";
 
@@ -73,7 +73,7 @@ export async function dijkstra(start, end) {
   prioQueue.unshift({ node: start, dist: 0 });
 
   while (prioQueue.length > 0) {
-    prioQueue.sort((a, b) => a.dist < b.dist);
+    prioQueue.sort((a, b) => b.dist - a.dist);
     const v = prioQueue.pop().node;
 
     await sleep(DELAY_MS);
@@ -108,7 +108,7 @@ export async function astar(start, end) {
   prioQueue.unshift({ node: start, dist: fscore[start.id] });
 
   while (prioQueue.length > 0) {
-    prioQueue.sort((a, b) => a.dist < b.dist);
+    prioQueue.sort((a, b) => b.dist - a.dist);
     const v = prioQueue.pop().node;
 
     await sleep(DELAY_MS);
@@ -127,6 +127,81 @@ export async function astar(start, end) {
         fscore[node.id] = alt + heuristic(node, end);
         prioQueue.unshift({ node, dist: fscore[node.id] });
       }
+    }
+  }
+
+  return getPath(parents, start, end);
+}
+
+export async function gbs(start, end) {
+  const prioQueue = [];
+  const parents = {};
+  const fscore = {};
+  const visited = {};
+
+  visited[start.id] = true;
+  fscore[start.id] = heuristic(start, end);
+  prioQueue.unshift({ node: start, dist: fscore[start.id] });
+
+  while (prioQueue.length > 0) {
+    prioQueue.sort((a, b) => b.dist - a.dist);
+    const v = prioQueue.pop().node;
+
+    await sleep(DELAY_MS);
+    v.classList.add("visited");
+
+    if (v.id === end.id) {
+      break;
+    }
+
+    for (const node of getNeighbors(v)) {
+      if (!visited[node.id]) {
+        node.classList.add("discovered");
+        parents[node.id] = v;
+        visited[node.id] = true;
+        fscore[node.id] = heuristic(node, end);
+        prioQueue.unshift({ node, dist: fscore[node.id] });
+      }
+    }
+  }
+
+  return getPath(parents, start, end);
+}
+
+export async function beam(start, end) {
+  let prioQueue = [];
+  const parents = {};
+  const fscore = {};
+  const visited = {};
+
+  visited[start.id] = true;
+  fscore[start.id] = heuristic(start, end);
+  prioQueue.unshift({ node: start, dist: fscore[start.id] });
+
+  while (prioQueue.length > 0) {
+    const v = prioQueue.pop().node;
+
+    await sleep(DELAY_MS);
+    v.classList.add("visited");
+
+    if (v.id === end.id) {
+      break;
+    }
+
+    for (const node of getNeighbors(v)) {
+      if (!visited[node.id]) {
+        node.classList.add("discovered");
+        visited[node.id] = true;
+        parents[node.id] = v;
+        fscore[node.id] = heuristic(node, end);
+        prioQueue.unshift({ node, dist: fscore[node.id] });
+      }
+    }
+
+    if (prioQueue.length > BEAM_BETA) {
+      prioQueue = prioQueue
+        .sort((a, b) => b.dist - a.dist)
+        .slice(-1 * BEAM_BETA);
     }
   }
 

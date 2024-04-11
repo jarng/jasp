@@ -1,4 +1,4 @@
-import { astar, bfs, dfs, dijkstra } from "./algos.js";
+import { astar, beam, bfs, dfs, dijkstra, gbs } from "./algos.js";
 import { drawPath, getTotalCost } from "./utils.js";
 import { ROWS, COLUMNS, WALL_RATIO } from "./const.js";
 
@@ -31,8 +31,12 @@ class App {
     }
 
     // init start and end
-    this.start = document.getElementById("0-0");
-    this.end = document.getElementById(`${ROWS - 1}-${COLUMNS - 1}`);
+    this.start = document.getElementById(
+      `${ROWS / 2 - 1}-${Math.round(COLUMNS / 5) - 1}`
+    );
+    this.end = document.getElementById(
+      `${ROWS / 2 - 1}-${Math.round((COLUMNS * 4) / 5) - 1}`
+    );
     this.start.classList.add("start");
     this.end.classList.add("end");
   }
@@ -105,6 +109,12 @@ class App {
           break;
         case "astar":
           await this.execute(() => astar(this.start, this.end));
+          break;
+        case "gbs":
+          await this.execute(() => gbs(this.start, this.end));
+          break;
+        case "beam":
+          await this.execute(() => beam(this.start, this.end));
           break;
         default:
           throw new Error("Algorithm not implemented");
