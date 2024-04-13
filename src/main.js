@@ -13,6 +13,7 @@ class App {
     this.rebuildBtn = document.getElementById("rebuild-btn");
 
     this.select = document.getElementById("algo-select");
+    this.mazeSelect = document.getElementById("maze-gen");
     this.elapsed = document.getElementById("elapsed");
     this.cost = document.getElementById("cost");
     this.running = false;
@@ -23,6 +24,8 @@ class App {
     this.endCoord = `${Math.round(ROWS / 2) - 1}-${
       Math.round((COLUMNS * 4) / 5) - 1
     }`;
+
+    this.mouseDown = false;
   }
 
   initGrid() {
@@ -82,12 +85,29 @@ class App {
 
   rebuild() {
     if (this.running) return;
-    this.grid.innerHTML = "";
-    this.initGrid();
-    this.initWalls();
+
+    if (this.mazeSelect.value === "random") {
+      this.grid.innerHTML = "";
+      this.initGrid();
+      this.initWalls();
+    } else {
+      this.makeMazeInteractive();
+    }
+
     this.running = false;
     this.elapsed.innerHTML = "";
     this.cost.innerHTML = "";
+  }
+
+  makeMazeInteractive() {
+    document.querySelectorAll(".cell").forEach((i) => {
+      i.classList.remove("wall", "visited", "path", "discovered");
+      i.addEventListener("mouseenter", () => {
+        if (i.id !== this.start.id && i.id !== this.end.id && this.mouseDown) {
+          i.classList.add("wall");
+        }
+      });
+    });
   }
 
   setupEvents() {
@@ -127,6 +147,27 @@ class App {
       this.resetBtn.disabled = false;
       this.rebuildBtn.disabled = false;
       this.running = false;
+    };
+
+    this.mazeSelect.onchange = () => {
+      switch (this.mazeSelect.value) {
+        case "random":
+          document.body.onmousedown = null;
+          document.body.onmouseup = null;
+          this.rebuild();
+          break;
+        case "interactive":
+          document.body.onmousedown = () => {
+            this.mouseDown = true;
+          };
+          document.body.onmouseup = () => {
+            this.mouseDown = false;
+          };
+          this.makeMazeInteractive();
+          break;
+        default:
+          throw new Error("Maze select value not implemented");
+      }
     };
 
     this.rebuildBtn.onclick = () => this.rebuild();
