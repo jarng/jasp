@@ -1,8 +1,6 @@
-# Pathfinding Visualizer
+# jasp
 
-A simple visualizer for commonly used pathfinding algorithms. I wanted to build this project because I was curious about how pathfinding algorithms work and I wanted visualize them in action, as well as to learn more about the algorithms themselves.
-
-The project is built in plain JS and CSS, no fancy tech or UI, just a simple grid and some buttons. Visit it here: [https://jasp.netlify.app](https://jasp.netlify.app/)
+A simple visualizer for commonly used pathfinding algorithms for educational purposes, and because I was bored. The project is built in plain JS and CSS, no fancy tech or UI, just a simple grid and some buttons. Visit it here: [https://jasp.netlify.app](https://jasp.netlify.app/)
 
 ![Screenshot](./image.png)
 
